@@ -1,0 +1,19 @@
+{
+  "name": "tracker",
+  "version": "1.0.0",
+  "description": "An app that allows you to keep track of something (IE: miles, chant, yoga, etc)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uttamindukuri5/Tracker.git"
+  },
+  "author": "Uttam Indukuri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uttamindukuri5/Tracker/issues"
+  },
+  "homepage": "https://github.com/uttamindukuri5/Tracker#readme"
+}
