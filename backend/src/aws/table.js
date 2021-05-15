@@ -1,0 +1,1 @@
+module.exports = { userTable: 'Users', trackTable: 'Tracker'};
