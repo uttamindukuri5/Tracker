@@ -1,5 +1,5 @@
-const userTable = require('../../aws/table');
-const UserAction = require('./action');
+const { userTable } = require('../../aws/table');
+const UserAction = require('../action');
 
 const generateParam = (type, value) => {
     const param = determineParam(type, value);
@@ -11,51 +11,23 @@ const determineParam = (type, value) => {
         case UserAction.CREATE:
             return generatePostParam(value);
         case UserAction.GET:
-            return generateGetUserIdParam(value);
+            return generateGetSpecificUserParam(value);
         case UserAction.UPDATE:
             return generateUpdateParam(value);
         case UserAction.SEARCH:
             return generateSearchParam(value);
+        case UserAction.GET_USERID:
+            return generateGetUserIdParam(value);
+        case UserAction.UPDATE_TRACK:
+            return generateUpdateTrackParam(value);
         default:
             return;
     }
 }
 
-const createTableParam = () => {
-    return {
-        AttributeDefinitions: [
-            {
-              AttributeName: 'id',
-              AttributeType: 'N'
-            },
-            {
-              AttributeName: 'userId',
-              AttributeType: 'S'
-            }
-          ],
-          KeySchema: [
-            {
-              AttributeName: 'id',
-              KeyType: 'HASH'
-            },
-            {
-              AttributeName: 'userId',
-              KeyType: 'RANGE'
-            }
-          ],
-          ProvisionedThroughput: {
-            ReadCapacityUnits: 5,
-            WriteCapacityUnits: 5
-          },
-          TableName: 'Users',
-          StreamSpecification: {
-            StreamEnabled: false
-          }
-    }
-}
-
-const getExpressionAttributeNames = () => {
-    return {
+const getExpressionAttributeNames = isId => {
+    return isId ?
+    {
         ExpressionAttributeNames: {
             '#id': 'id',
             '#userId': 'userId',
@@ -66,8 +38,20 @@ const getExpressionAttributeNames = () => {
             '#team': 'team',
             '#track': 'track',
         }
+    }
+    :
+    {
+        ExpressionAttributeNames: {
+            '#userId': 'userId',
+            '#firstName': 'firstName',
+            '#lastName': 'lastName',
+            '#email': 'email',
+            '#phone': 'phone',
+            '#team': 'team',
+            '#track': 'track',
+        }
     };
-}
+};
 
 const generatePostParam = user => {
     return {
@@ -85,16 +69,22 @@ const generatePostParam = user => {
     };
 };
 
-const generateGetUserIdParam = ({ user, isId }) => {
-    return isId ?
-        {
-            Key: {
-                'id': user
-            }
-        } :
-        {
-            Key: {
-                'userId': user
+const generateGetSpecificUserParam = id => {
+    return {
+        Key: {
+            'id': id
+        }
+    };
+};
+
+const generateGetUserIdParam = userId => {
+    return {
+            FilterExpression: '#userId = :userId',
+            ExpressionAttributeNames: {
+                '#userId': 'userId'
+            },
+            ExpressionAttributeValues: {
+                ':userId': userId
             }
         }
 };
@@ -102,12 +92,12 @@ const generateGetUserIdParam = ({ user, isId }) => {
 const generateUpdateParam = user => {
     return {
         Key: {
-            'userId': user.previousId
+            'id': user.id,
         },
-        ...getExpressionAttributeNames(),
-        UpdateExpression: 'set userId = :id, firstName = :fn, lastName = :ln, email = :email, phone = :phone, team = :team, track = :track',
+        ...getExpressionAttributeNames(false),
+        UpdateExpression: 'set #userId = :userId, #firstName = :fn, #lastName = :ln, #email = :email, #phone = :phone, #team = :team, #track = :track',
         ExpressionAttributeValues: {
-            ':id': user.userId,
+            ':userId': user.userId,
             ':fn': user.firstName,
             ':ln': user.lastName,
             ':email': user.email,
@@ -118,13 +108,30 @@ const generateUpdateParam = user => {
     };
 };
 
+const generateUpdateTrackParam = ({ id, track }) => {
+    console.log(id, track);
+    return {
+        Key: {
+            'id': id
+        },
+        ExpressionAttributeNames: {
+            '#track': 'track'
+        },
+        UpdateExpression: 'set #track = :track',
+        ExpressionAttributeValues: {
+            ':track': track
+        }
+    };
+};
+
 const generateSearchParam = search => {
     return {
-        FilterExpression: '(contains(#userId, :id) or contains(#firstName, :fn) or contains(#lastName, :ln) or contains(#email, :email) or ' +
+        FilterExpression: '(contains(#id, :id) or contains(#userId, :userId) or contains(#firstName, :fn) or contains(#lastName, :ln) or contains(#email, :email) or ' +
             'contains(#phone, :phone) or contains(#team, :team) or contains(#track, :track))',
-        ...getExpressionAttributeNames(),
+        ...getExpressionAttributeNames(true),
         ExpressionAttributeValues: {
             ':id': search,
+            ':userId': search,
             ':fn': search,
             ':ln': search,
             ':email': search,
