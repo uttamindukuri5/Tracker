@@ -59,7 +59,7 @@ const getUserID = async userId => {
     try {
         const response = await db.scan(generateParam(UserAction.GET_USERID, userId)).promise();
         console.log(response);
-        return response.Items;
+        return response.Items[0];
     } catch (err) {
         console.log(err);
     }

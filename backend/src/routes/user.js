@@ -1,6 +1,8 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 
 const User = require('../model/User/users');
+const { createToken, validateToken } = require('../config/session');
 
 const router = express.Router();
 
@@ -15,13 +17,39 @@ router.post('/create', async (req, res) => {
     try {
         const userExist = await User.getUserID(newUser.userId);
         if (userExist.length === 0) {
-            const isSaved = await User.saveUser(newUser);
-            isSaved ? res.status(201).send({ data: 'User saved successfully' }) : res.status(400).send({ error: 'something went wrong' });
+            bcrypt.hash(newUser.password, 10, async (err, hash) => {
+                if (err)
+                    return res.status(400).send({ error: err.message });
+                else {
+                    newUser.password = hash;
+                    const isSaved = await User.saveUser(newUser);
+                    isSaved ? res.status(201).send({ data: 'User saved successfully' }) : res.status(400).send({ error: 'something went wrong' });
+                }
+            });
         } else
             res.status(409).send({ error: 'User ID already taken' });
     } catch (err) {
         res.status(400).send({ error: 'User ID already exist, please choose a different User ID' });
     }
+});
+
+router.post('/login', async (req, res) => {
+    const { user: authUser } = req.body;
+    const user = await User.getUserID(authUser.userId);
+    if (user) {
+        bcrypt.compare(authUser.password, user.password, (err, result) => {
+            if (err || !result)
+                return res.status(401).send({ error: 'Authentication Failed' });
+            else {
+                const token = createToken({ id: user.id });
+                return res.status(200).send({
+                    message: 'Authentication Successful',
+                    token
+                });
+            }
+        });
+    } else
+        res.status(401).send({ error: 'Authentication Failed' });
 });
 
 router.get('/', async (req, res) => {

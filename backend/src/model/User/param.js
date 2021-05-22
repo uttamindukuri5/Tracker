@@ -63,7 +63,8 @@ const generatePostParam = user => {
             'email': user.email,
             'phone': user.phone,
             'team': user.team,
-            'track': user.track
+            'track': user.track,
+            'password': user.password
         },
         ConditionExpression: 'attribute_not_exists(userId)'
     };
