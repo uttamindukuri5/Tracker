@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom';
+
+import "./App.css";
+
+import { NavBar } from './components/Navbar/navbar';
+import { Login } from './containers/Login/Login';
+import { Register } from './containers/Register/Register';
+import { Home } from './containers/Home/Home';
 
 function App() {
+  const [checkout, setCheckOut] = useState(false);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <div id='navbarDiv'>
+          <NavBar/>
+        </div>
+        <Switch>
+          <Route path='/login' component={ Login } />
+          <Route path='/register' component={ Register } />
+          <Route path='/' component={ Home } />
+        </Switch>
+      </Router>
     </div>
   );
 }
