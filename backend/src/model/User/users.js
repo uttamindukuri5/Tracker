@@ -13,7 +13,7 @@ const createUser = async (newUser)  => {
  * Allows you to create a new user
  * @param { User OBJECT } newUser
  */
-const saveUser = async (newUser) => {
+const saveUser = async newUser => {
     const user = await createUser(newUser);
     if (user) {
         try {
@@ -58,7 +58,7 @@ const getUser = async id => {
 const getUserID = async userId => {
     try {
         const response = await db.scan(generateParam(UserAction.GET_USERID, userId)).promise();
-        console.log(response);
+        console.log('RESPONSE USERID', response);
         return response.Items[0];
     } catch (err) {
         console.log(err);

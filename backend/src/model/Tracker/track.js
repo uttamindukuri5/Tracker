@@ -7,8 +7,10 @@ const db = require('../db');
 const { response } = require('../../express');
 
 const createTrack = track => {
-    return validate.validTrack(track.count) ? { id: uuid(), ...track, date: Date.now() } : null;
+    return validate.validTrack(track.count) ? { id: uuid(), ...track, date: getDate(track.date) } : null;
 }
+
+const getDate = date => date ? Date.parse(date) : Date.now();
 
 const saveTrack = async newTrack => {
     const track = createTrack(newTrack);

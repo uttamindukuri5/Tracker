@@ -37,6 +37,7 @@ const getExpressionAttributeNames = isId => {
             '#phone': 'phone',
             '#team': 'team',
             '#track': 'track',
+            '#age': 'age'
         }
     }
     :
@@ -49,6 +50,7 @@ const getExpressionAttributeNames = isId => {
             '#phone': 'phone',
             '#team': 'team',
             '#track': 'track',
+            '#age': 'age'
         }
     };
 };
@@ -64,7 +66,8 @@ const generatePostParam = user => {
             'phone': user.phone,
             'team': user.team,
             'track': user.track,
-            'password': user.password
+            'password': user.password,
+            'age': user.age
         },
         ConditionExpression: 'attribute_not_exists(userId)'
     };
@@ -96,7 +99,7 @@ const generateUpdateParam = user => {
             'id': user.id,
         },
         ...getExpressionAttributeNames(false),
-        UpdateExpression: 'set #userId = :userId, #firstName = :fn, #lastName = :ln, #email = :email, #phone = :phone, #team = :team, #track = :track',
+        UpdateExpression: 'set #userId = :userId, #firstName = :fn, #lastName = :ln, #email = :email, #phone = :phone, #team = :team, #track = :track, #age = :age',
         ExpressionAttributeValues: {
             ':userId': user.userId,
             ':fn': user.firstName,
@@ -104,7 +107,8 @@ const generateUpdateParam = user => {
             ':email': user.email,
             ':phone': user.phone,
             ':team': user.team,
-            ':track': user.track
+            ':track': user.track,
+            ':age': user.age
         }
     };
 };
@@ -128,7 +132,7 @@ const generateUpdateTrackParam = ({ id, track }) => {
 const generateSearchParam = search => {
     return {
         FilterExpression: '(contains(#id, :id) or contains(#userId, :userId) or contains(#firstName, :fn) or contains(#lastName, :ln) or contains(#email, :email) or ' +
-            'contains(#phone, :phone) or contains(#team, :team) or contains(#track, :track))',
+            'contains(#phone, :phone) or contains(#team, :team) or contains(#track, :track) or contains(#age, :age))',
         ...getExpressionAttributeNames(true),
         ExpressionAttributeValues: {
             ':id': search,
@@ -139,6 +143,7 @@ const generateSearchParam = search => {
             ':phone': search,
             ':team': search,
             ':track': search,
+            ':age': search
         }
     };
 };

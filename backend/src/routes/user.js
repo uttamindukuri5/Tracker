@@ -2,13 +2,15 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 
 const User = require('../model/User/users');
-const { createToken, validateToken } = require('../config/session');
+const { createToken } = require('../config/session');
 
 const router = express.Router();
 
 const removeConfidentialInformation = user => {
     delete user.email;
     delete user.phone;
+    delete user.userId;
+    delete user.password;
     return user;
 }
 
@@ -16,7 +18,8 @@ router.post('/create', async (req, res) => {
     const { user: newUser} = req.body;
     try {
         const userExist = await User.getUserID(newUser.userId);
-        if (userExist.length === 0) {
+        console.log('USER EXIST: ', userExist);
+        if (userExist === undefined) {
             bcrypt.hash(newUser.password, 10, async (err, hash) => {
                 if (err)
                     return res.status(400).send({ error: err.message });
@@ -53,8 +56,16 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    const users = await User.getUsers();
-    users.map( user => removeConfidentialInformation(user) );
+    let users = await User.getUsers();
+    users = users.map( user => {
+        removeConfidentialInformation(user);
+        return {
+            name: user.firstName + ' ' + user.lastName,
+            team: user.team,
+            track: user.track,
+            id: user.id
+        }
+    });
     res.status(200).send({ data: users });
 });
 

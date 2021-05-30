@@ -3,6 +3,8 @@ const express = require('express');
 const User = require('../model/User/users');
 const Track = require('../model/Tracker/track');
 
+const { validateToken } = require('../config/session');
+
 const router = express.Router();
 
 
@@ -15,12 +17,14 @@ router.get('/teams', async (req, res) => {
             if (existingTeam === -1) {
                 const teamData = {
                     teamName: user.team,
-                    totalTrack: user.track
+                    totalTrack: user.track,
+                    participants: 1
                 };
                 teams.push(teamData);
             }
             else {
                 teams[existingTeam].totalTrack += user.track;
+                teams[existingTeam].participants += 1;
             }
         });
 
@@ -33,15 +37,15 @@ router.get('/teams', async (req, res) => {
     }
 });
 
-router.get('/:userId', async (req, res) => {
-    const { userId } = req.params;
+router.get('/history', validateToken, async (req, res) => {
+    const { id } = req.session;
     try {
-        const user = await User.getUser(userId);
+        const user = await User.getUser(id);
         if (user) {
-            const trackHistory = await Track.getHistoryTrack(userId);
+            const trackHistory = await Track.getHistoryTrack(id);
             let cumulativeTrack = 0;
             trackHistory.forEach(track => cumulativeTrack += track.counter);
-            res.status(200).send({ data: { totalTrack: cumulativeTrack, ...trackHistory } });
+            res.status(200).send({ data: { totalTrack: cumulativeTrack, history: trackHistory } });
         }
     } catch (err) {
         console.error(err);
