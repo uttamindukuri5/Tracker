@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
     Navbar,
@@ -11,33 +11,33 @@ import {
 } from 'reactstrap';
 
 import { removeToken, getToken } from '../../config/token';
-import classes from './navbar.module.css';
-
 
 export const NavBar = () => {
     const history = useHistory();
 
-    const isAuth = () => getToken() != null;
+    const [ authOption, setAuthOption ] = useState('');
+    const [ reload, setReload ] = useState(0);
 
-    const displayAuthOption = () => {
-        console.log('IS AUTH: ', isAuth())
-        if (isAuth()) {
-            return [<DropdownItem onClick={ () => onAuth() }>Log out</DropdownItem>]
-        } else {
-            return [
-                <DropdownItem onClick={ () => onAuth() }>Sign In</DropdownItem>,
-                <DropdownItem onClick={ () => history.push('/register') }>Register</DropdownItem>
-            ]
-        }
-    }
+    useEffect(() => {
+        console.log('USE EFFECT: ', verifyAuth());
+        verifyAuth() ? setAuthOption('Sign-Out') : setAuthOption('Login');
+        setReload(reload + 1);
+    }, [reload])
+
+
+    const verifyAuth = () => getToken() != null;
 
     const onAuth = () => {
-        if (!isAuth()) {
-            history.push('/login')
-        } else {
+        if (verifyAuth()) {
             removeToken();
-            history.push('/')
+            setAuthOption('Login');
+            history.push('/login');
         }
+        else {
+            setAuthOption('Sign-Out');
+            history.push('/');
+        }
+        setReload(reload + 1);
     }
 
     return (
@@ -49,7 +49,8 @@ export const NavBar = () => {
                     <UncontrolledDropdown nav inNavbar>
                         <DropdownToggle nav caret>Account</DropdownToggle>
                         <DropdownMenu right>
-                            { displayAuthOption() }
+                            <DropdownItem onClick={ () => history.push('/register') }>Register</DropdownItem>
+                            <DropdownItem onClick={ () => onAuth() }>{ authOption }</DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
                 </Nav>

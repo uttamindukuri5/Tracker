@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,7 +13,6 @@ import { Register } from './containers/Register/Register';
 import { Home } from './containers/Home/Home';
 
 function App() {
-  const [checkout, setCheckOut] = useState(false);
 
   return (
     <div className="App">
