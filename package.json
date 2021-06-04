@@ -4,6 +4,11 @@
   "description": "An app that allows you to keep track of something (IE: miles, chant, yoga, etc)",
   "main": "index.js",
   "scripts": {
+    "backend:dev": "cd backend; npm run dev",
+    "frontend": "cd client; npm start",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend\"",
+    "prod": "concurrently \"cd backend; npm start\" \"cd client; serve -s build -p 3000\"",
+    "secure:prod": "concurrently \"cd backend; npm start\" \"cd client; export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=keytmp.pem serve -s build -p 3000\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/uttamindukuri5/Tracker/issues"
   },
-  "homepage": "https://github.com/uttamindukuri5/Tracker#readme"
+  "homepage": "https://github.com/uttamindukuri5/Tracker#readme",
+  "dependencies": {
+    "concurrently": "^6.2.0"
+  }
 }
