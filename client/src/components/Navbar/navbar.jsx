@@ -12,32 +12,29 @@ import {
 
 import { removeToken, getToken } from '../../config/token';
 
-export const NavBar = () => {
+export const NavBar = ({ auth, setAuth }) => {
     const history = useHistory();
 
-    const [ authOption, setAuthOption ] = useState('');
-    const [ reload, setReload ] = useState(0);
+    //const [ authOption, setAuthOption ] = useState('');
+    const [ isAuth, setIsAuth ] = useState(false);
 
     useEffect(() => {
-        console.log('USE EFFECT: ', verifyAuth());
-        verifyAuth() ? setAuthOption('Sign-Out') : setAuthOption('Login');
-        setReload(reload + 1);
-    }, [reload])
+        verifyAuth() ? setAuth(true) : setAuth(false);
+    }, [auth]);
 
 
     const verifyAuth = () => getToken() != null;
 
-    const onAuth = () => {
-        if (verifyAuth()) {
-            removeToken();
-            setAuthOption('Login');
-            history.push('/login');
-        }
-        else {
-            setAuthOption('Sign-Out');
-            history.push('/');
-        }
-        setReload(reload + 1);
+    const signout = () => {
+        removeToken();
+        setIsAuth(!isAuth)
+        setAuth(false);
+        history.push('/login');
+    }
+
+    const login = () => {
+        setIsAuth(!isAuth);
+        history.push('/login');
     }
 
     return (
@@ -50,7 +47,8 @@ export const NavBar = () => {
                         <DropdownToggle nav caret>Account</DropdownToggle>
                         <DropdownMenu right>
                             <DropdownItem onClick={ () => history.push('/register') }>Register</DropdownItem>
-                            <DropdownItem onClick={ () => onAuth() }>{ authOption }</DropdownItem>
+                            <DropdownItem onClick={ () => login() } style={{ display: auth ? 'none' : '' }}>Login</DropdownItem>
+                            <DropdownItem onClick={ () =>  signout() } style={{ display: !auth ? 'none' : '' }}>Sign-Out</DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
                 </Nav>

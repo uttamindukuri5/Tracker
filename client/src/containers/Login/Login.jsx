@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Form, Field } from 'react-final-form';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
 import { classNames } from 'primereact/utils';
 
 import { login } from '../../api/endpoint';
@@ -11,7 +10,7 @@ import { Card } from '../../components/Card/card';
 
 import classes from './login.module.css';
 
-export const Login = () => {
+export const Login = ({ setAuth }) => {
     const history = useHistory();
 
     const [ username, setUsername ] = useState('');
@@ -45,8 +44,8 @@ export const Login = () => {
             }
         };
         const response = await login(data);
-        console.log(response);
         if (response.status === 200) {
+            setAuth(true);
             history.push('/');
         }
         reset();

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Form } from 'react-final-form';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
@@ -8,6 +8,8 @@ import { register } from '../../api/endpoint';
 import { Card } from '../../components/Card/card';
 import { FormField } from '../../components/Form/field';
 import PayPal from '../../components/Paypal';
+
+import data from '../../data/config.json';
 
 import classes from './register.module.css';
 
@@ -173,7 +175,7 @@ export const Register = () => {
                                     label='Team'
                                     value={ team }
                                     setValue={ setTeam }
-                                    data={['DALLAS', 'DETROIT', 'SEATTLE']}
+                                    data={data.team}
                                 />
                                 <PayPal setPaid={ setIsPaid } />
                                 <Button type="submit" label="Submit" className="p-mt-2" />

@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.7.2",
     "bootstrap": "^5.0.1",
     "dotenv": "^8.2.0",
+    "fs": "^0.0.1-security",
     "nodemon": "^2.0.7",
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",
