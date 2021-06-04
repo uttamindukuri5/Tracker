@@ -1,9 +1,11 @@
 const express = require('express');
+const path = require('path');
 
 const User = require('../model/User/users');
 const Track = require('../model/Tracker/track');
 
 const { validateToken } = require('../config/session');
+const { json } = require('body-parser');
 
 const router = express.Router();
 
@@ -50,6 +52,35 @@ router.get('/history', validateToken, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(400).send({ error: 'something went wrong' });
+    }
+});
+
+router.post('/upload', async (req, res) => {
+    console.log(req.files);
+    try {
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+        } else {
+            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            const jsonFile = req.files.jsonFile;
+            //Use the mv() method to place the file in upload directory (i.e. "uploads")
+            await jsonFile.mv(__dirname + '/../../../client/src/data/' + jsonFile.name);
+            //send response
+            res.send({
+                status: true,
+                message: 'File is uploaded',
+                data: {
+                    name: jsonFile.name,
+                    mimetype: jsonFile.mimetype,
+                    size: jsonFile.size
+                }
+            });
+        }
+    } catch (err) {
+        res.status(500).send(err);
     }
 });
 

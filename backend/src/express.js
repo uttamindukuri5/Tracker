@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const morgan = require('morgan');
 const cors = require('cors');
 
@@ -8,7 +9,9 @@ const statRouter = require('./routes/stat');
 
 const app = express();
 
-app.use(express.urlencoded({ extended: false }))
+app.use(fileUpload({ createParentPath: true }));
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan('combined'));
 app.use(cors());
