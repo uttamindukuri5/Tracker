@@ -6,7 +6,6 @@ const app = require('./express');
 AWS.config.getCredentials(function(err) {
     if (err) console.log(err.stack);
     else {
-
         https.createServer({
             key: fs.readFileSync('../../../../../../../etc/letsencrypt/live/vtwalk.org/privkey.pem'),
             cert: fs.readFileSync('../../../../../../../etc/letsencrypt/live/vtwalk.org/fullchain.pem'),
