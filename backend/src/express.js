@@ -6,6 +6,7 @@ const cors = require('cors');
 const userRouter = require('./routes/user');
 const trackRouter = require('./routes/track');
 const statRouter = require('./routes/stat');
+const configRouter = require('./routes/config');
 
 const app = express();
 
@@ -19,5 +20,6 @@ app.use(cors());
 app.use('/user', userRouter);
 app.use('/track', trackRouter);
 app.use('/stat', statRouter);
+app.use('/config', configRouter);
 
 module.exports = app;

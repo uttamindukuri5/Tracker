@@ -1,1 +1,1 @@
-module.exports = { userTable: 'Users', trackTable: 'Tracker'};
+module.exports = { userTable: 'Users', trackTable: 'Tracker', configTable: 'Config' };
