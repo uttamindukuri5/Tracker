@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form, Field } from 'react-final-form';
 import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
 import { classNames } from 'primereact/utils';
 
 import { login } from '../../api/endpoint';
@@ -15,6 +17,7 @@ export const Login = ({ setAuth }) => {
 
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
+    const [ showMessage, setShowMessage ] = useState(false);
 
     const validate = (data) => {
         let errors = {};
@@ -36,7 +39,6 @@ export const Login = ({ setAuth }) => {
     };
 
     const onSubmit = async () => {
-        console.log(username, password);
         const data = {
             user: {
                 userId: username,
@@ -47,6 +49,8 @@ export const Login = ({ setAuth }) => {
         if (response.status === 200) {
             setAuth(true);
             history.push('/');
+        } else {
+            setShowMessage(true);
         }
         reset();
     };
@@ -55,34 +59,43 @@ export const Login = ({ setAuth }) => {
         setUsername('');
         setPassword('');
     }
+    const dialogFooter = <div><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false) } /></div>;
+
 
 
     return (
         <div className={classes.container}>
+            <Dialog visible={showMessage} onHide={() => setShowMessage(false)} position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
+                <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
+                    <i className='pi pi-times-circle' style={{ fontSize: '5rem', color: 'red' }}></i>
+                    <h5>Incorrect Authentication</h5>
+                    <p>Either User Name or Password is Incorrect</p>
+                </div>
+            </Dialog>
             <Card  title='LOGIN'>
                 <Form onSubmit={onSubmit} validate={ validate } render={({ handleSubmit }) => (
-                            <form onSubmit={handleSubmit}>
-                                <Field name="username" render={({ input, meta }) => (
-                                    <div className={ classes.inputField }>
-                                        <span className="p-float-label">
-                                            <InputText id="username" {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setUsername(e.target.value) } value={ username }/>
-                                            <label htmlFor="username" className={classNames({ 'p-error': isFormFieldValid(meta) })}>Username*</label>
-                                        </span>
-                                        {getFormErrorMessage(meta)}
-                                    </div>
-                                )} />
-                                <Field name="password" render={({ input, meta }) => (
-                                    <div className={ classes.inputField }>
-                                        <span className="p-float-label">
-                                            <InputText id="password"  type='password' {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } />
-                                            <label htmlFor="password" className={classNames({ 'p-error': isFormFieldValid(meta) })}>Password*</label>
-                                        </span>
-                                        {getFormErrorMessage(meta)}
-                                    </div>
-                                )} />
-                                <Button type="submit" label="Submit" className="p-mt-2" />
-                            </form>
+                    <form onSubmit={handleSubmit}>
+                        <Field name="username" render={({ input, meta }) => (
+                            <div className={ classes.inputField }>
+                                <span className="p-float-label">
+                                    <InputText id="username" {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setUsername(e.target.value) } value={ username }/>
+                                    <label htmlFor="username" className={classNames({ 'p-error': isFormFieldValid(meta) })}>Username*</label>
+                                </span>
+                                {getFormErrorMessage(meta)}
+                            </div>
                         )} />
+                        <Field name="password" render={({ input, meta }) => (
+                            <div className={ classes.inputField }>
+                                <span className="p-float-label">
+                                    <Password id='password' {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } toggleMask feedback={ false }/>
+                                    <label htmlFor="password" className={classNames({ 'p-error': isFormFieldValid(meta) })}>Password*</label>
+                                </span>
+                                {getFormErrorMessage(meta)}
+                            </div>
+                        )} />
+                        <Button type="submit" label="Submit" className="p-mt-2" />
+                    </form>
+                )} />
             </Card>
         </div>
     )

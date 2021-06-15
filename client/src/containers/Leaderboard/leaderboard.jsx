@@ -17,9 +17,7 @@ export const Leaderboard = () => {
     useEffect(() => {
         (async() => {
             const response = await getAllUser();
-            console.log('RESPONSE: ', response);
             if (response.status === 200) {
-                console.log('LEADERBOARD', response.data.data);
                 setData(response.data.data);
             }
         })();

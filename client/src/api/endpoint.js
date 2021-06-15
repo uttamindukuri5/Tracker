@@ -46,3 +46,5 @@ export const registerTrack = async data => await callBackend(POST, `/track/creat
 
 export const getTeamStat = async () => await callBackend(GET, `/stat/teams`);
 export const getUserHistory = async () => await callBackend(GET, `/stat/history`);
+
+export const getConfig = async () => await callBackend(GET, `/config/detroit`);

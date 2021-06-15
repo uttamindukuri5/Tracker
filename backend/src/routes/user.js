@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 
 const User = require('../model/User/users');
 const { createToken } = require('../config/session');
+const { sendEmail } = require('../aws/email');
 
 const router = express.Router();
 
@@ -26,7 +27,13 @@ router.post('/create', async (req, res) => {
                 else {
                     newUser.password = hash;
                     const isSaved = await User.saveUser(newUser);
-                    isSaved ? res.status(201).send({ data: 'User saved successfully' }) : res.status(400).send({ error: 'something went wrong' });
+                    if (isSaved) {
+                        const isSent = await sendEmail(newUser);
+                        console.log(isSent);
+                        res.status(201).send({ data: 'User saved successfully' })
+                    } else {
+                        res.status(400).send({ error: 'something went wrong' });
+                    }
                 }
             });
         } else

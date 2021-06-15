@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form } from 'react-final-form';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
-import { register } from '../../api/endpoint';
+import { register, getConfig } from '../../api/endpoint';
+import { validEmail, validPhone } from '../../config/validation';
 import { Card } from '../../components/Card/card';
 import { FormField } from '../../components/Form/field';
 import PayPal from '../../components/Paypal';
-
-import data from '../../data/config.json';
 
 import classes from './register.module.css';
 
@@ -21,22 +20,27 @@ export const Register = () => {
     const [ email, setEmail ] = useState('');
     const [ phone, setPhone ] = useState('');
     const [ team, setTeam ] = useState('');
-    const [ age, setAge ] = useState('');
+    const [ age, setAge ] = useState();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ showMessage, setShowMessage ] = useState(false);
     const [ isRegistered, setIsRegistered ] = useState(false);
     const [ isPaid, setIsPaid ] = useState(false);
+    const [ config, setConfig ] = useState({});
 
-    const validate = (data) => {
+    useEffect(() => {
+        (async () => {
+            const configResponse = await getConfig();
+            if (configResponse.status === 200)
+                setConfig(configResponse.data.data);
+        })();
+    }, [])
+
+    const validate = () => {
         let errors = {};
 
         if (!username) {
             errors.name = 'Name is required.';
-        }
-
-        if (!password) {
-            errors.password = 'Password is required.';
         }
 
         if (!firstName) {
@@ -60,6 +64,12 @@ export const Register = () => {
 
     const dialogFooter = <div><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false) } /></div>;
 
+    const ageRange = () => {
+        return {
+            min: 0,
+            max: 99
+        };
+    };
 
     const displayIcon = () => {
         return isRegistered ?
@@ -77,12 +87,12 @@ export const Register = () => {
                 phone,
                 team,
                 userId: username,
-                password
+                password,
+                age
             }
         };
-        if (isPaid) {
+        if (isPaid && validEmail(email) && validPhone(phone)) {
             const response = await register(data);
-            console.log(response);
             if (response.status === 201) {
                 reset();
                 setIsRegistered(true);
@@ -102,7 +112,7 @@ export const Register = () => {
         setLastName('');
         setEmail('');
         setPhone('');
-        setAge('');
+        setAge();
     };
 
 
@@ -119,68 +129,69 @@ export const Register = () => {
             </Dialog>
             <Card  title='REGISTER'>
                 <Form onSubmit={onSubmit} validate={ validate } render={({ handleSubmit }) => (
-                            <form onSubmit={handleSubmit}>
-                                <FormField
-                                    type='INPUT'
-                                    name='firstName'
-                                    label='First Name'
-                                    value={ firstName }
-                                    setValue={ setFirstName }
-                                />
-                                <FormField
-                                    type='INPUT'
-                                    name='lastName'
-                                    label='Last Name'
-                                    value={ lastName }
-                                    setValue={ setLastName }
-                                />
-                                <FormField
-                                    type='INPUT'
-                                    name='username'
-                                    label='Username'
-                                    value={ username }
-                                    setValue={ setUsername }
-                                />
-                                <FormField
-                                    type='PASSWORD'
-                                    name='password'
-                                    label='Password'
-                                    value={ password }
-                                    setValue={ setPassword }
-                                />
-                                <FormField
-                                    type='INPUT'
-                                    name='email'
-                                    label='Email'
-                                    value={ email }
-                                    setValue={ setEmail }
-                                />
-                                <FormField
-                                    type='INPUT'
-                                    name='phone'
-                                    label='Phone'
-                                    value={ phone }
-                                    setValue={ setPhone }
-                                />
-                                <FormField
-                                    type='INPUT'
-                                    name='age'
-                                    label='Age'
-                                    value={ age }
-                                    setValue={ setAge }
-                                />
-                                <FormField
-                                    type='DROPDOWN'
-                                    name='team'
-                                    label='Team'
-                                    value={ team }
-                                    setValue={ setTeam }
-                                    data={data.team}
-                                />
-                                <PayPal setPaid={ setIsPaid } />
-                                <Button type="submit" label="Submit" className="p-mt-2" />
-                            </form>
-                        )} />
+                    <form onSubmit={handleSubmit}>
+                        <FormField
+                            type='INPUT'
+                            name='firstName'
+                            label='First Name'
+                            value={ firstName }
+                            setValue={ setFirstName }
+                        />
+                        <FormField
+                            type='INPUT'
+                            name='lastName'
+                            label='Last Name'
+                            value={ lastName }
+                            setValue={ setLastName }
+                        />
+                        <FormField
+                            type='INPUT'
+                            name='username'
+                            label='Username'
+                            value={ username }
+                            setValue={ setUsername }
+                        />
+                        <FormField
+                            type='PASSWORD'
+                            name='password'
+                            label='Password'
+                            value={ password }
+                            setValue={ setPassword }
+                        />
+                        <FormField
+                            type='INPUT'
+                            name='email'
+                            label='Email'
+                            value={ email }
+                            setValue={ setEmail }
+                        />
+                        <FormField
+                            type='INPUT'
+                            name='phone'
+                            label='Phone'
+                            value={ phone }
+                            setValue={ setPhone }
+                        />
+                        <FormField
+                            type='NUMBER'
+                            name='age'
+                            label='Age'
+                            value={ age }
+                            setValue={ setAge }
+                            data={ ageRange() }
+                        />
+                        <FormField
+                            type='DROPDOWN'
+                            name='team'
+                            label='Team'
+                            value={ team }
+                            setValue={ setTeam }
+                            data={config.team}
+                        />
+                        <PayPal setPaid={ setIsPaid } />
+                        <Button type="submit" label="Submit" className="p-mt-2" />
+                    </form>
+                )} />
             </Card>
         </div>
     )

@@ -26,10 +26,12 @@ router.post('/create', validateToken, async (req, res) => {
     const { track: newTrack } = req.body;
     const { id } = req.session;
     const newUserTrack = { userId: id, ...newTrack };
+    console.log('NEW USER TRACK: ', newUserTrack);
     try {
         const isSaved = await Track.saveTrack(newUserTrack);
         if (isSaved) {
             const isUserUpdate = await updateUserTrack(newUserTrack);
+
             isUserUpdate ? res.status(201).send({ data: 'Successfully Inserted Track' }) : res.status(400).send({ error: 'something went wrong' });
         } else
             res.status(400).send({ error: 'Invalid Request' });
