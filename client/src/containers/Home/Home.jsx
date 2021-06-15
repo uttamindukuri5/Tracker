@@ -9,7 +9,7 @@ import { Track } from '../Track/track';
 import { Stats } from '../../components/Stats/stats';
 import { Table } from '../../components/Table/table';
 
-import { getTeamStat, getAllUser } from '../../api/endpoint';
+import { getTeamStat, getAllUser, getConfig } from '../../api/endpoint';
 import { getToken } from '../../config/token';
 
 import classes from './home.module.css';
@@ -22,12 +22,15 @@ export const Home = () => {
     const [ teams, setTeams ] = useState({});
     const [ participants, setParticipants ] = useState(0);
     const [ totalTrack, setTotalTrack ] = useState(0);
+    const [ daysRemaining, setDaysRemaining ] = useState(0);
+    const [ config, setConfig ] = useState({});
 
     useEffect(() => {
         (async() => {
             if (getToken()) {
                 const teamResponse = await getTeamStat();
                 const userResponse = await getAllUser();
+                const configResponse = await getConfig();
 
                 if (teamResponse.status === 200) {
                     setTotalTrack(calculateTotalTracks(teamResponse.data.data));
@@ -37,10 +40,24 @@ export const Home = () => {
                 if (userResponse.status === 200) {
                     setParticipants(userResponse.data.data.length);
                 }
+
+                if (configResponse.status === 200) {
+                    setConfig(configResponse.data.data);
+                    setDaysRemaining(getNumOfDays(configResponse.data.data.date))
+                }
             } else
                 history.push('/login');
         })();
-    }, [ setTotalTrack, setTeams ]);
+    }, [ setTotalTrack, setTeams, setDaysRemaining, history ]);
+
+    const getNumOfDays = date => {
+        const startDate = new Date(date.start * 1000);
+        const endDate = new Date(date.end * 1000);
+
+        const day = 1000 * 60 * 60 * 24;
+        const diffTime = endDate - startDate;
+        return Math.round(diffTime / day);
+    }
 
     const calculateTotalTracks = data => {
         let totalTrack = 0;
@@ -61,7 +78,7 @@ export const Home = () => {
                             />
                             <Stats
                                 title='Goal'
-                                stat={40000}
+                                stat={ config.goal }
                             />
                             <Stats
                                 title='Total Participants'
@@ -73,7 +90,7 @@ export const Home = () => {
                             />
                             <Stats
                                 title='Remaining Days'
-                                stat={31}
+                                stat={ daysRemaining }
                             />
                         </div>
                         <div>

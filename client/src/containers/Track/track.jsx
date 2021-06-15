@@ -7,21 +7,21 @@ import { Messages } from 'primereact/messages';
 
 import { Table } from '../../components/Table/table';
 
-import { registerTrack, getUserHistory } from '../../api/endpoint';
+import { registerTrack, getUserHistory, getConfig } from '../../api/endpoint';
 
 import classes from './track.module.css';
 
 export const Track = () => {
     const
         today = new Date(),
-        messages = useRef(null),
-        startDate = new Date('01/15/2021'),
-        endDate = new Date('03/22/2021');
+        messages = useRef(null);
 
     const [ date, setDate ] = useState(today);
     const [ track, setTrack ] = useState();
     const [ totalTrack, setTotalTrack ] = useState(0);
     const [ data, setData ] = useState([]);
+    const [ config, setConfig ] = useState({});
+
 
     const viewUserHistory = async () => {
         const response = await getUserHistory();
@@ -46,6 +46,10 @@ export const Track = () => {
     useEffect(() => {
         (async () => {
             await viewUserHistory();
+            const configResponse = await getConfig();
+            if (configResponse.status === 200) {
+                setConfig(configResponse.data.data);
+            }
         })();
     }, [setData, setTotalTrack]);
 
@@ -58,7 +62,7 @@ export const Track = () => {
                 }
             };
 
-            if (track < 0 || track > 100) {
+            if (track < 0 || track > 10000) {
                 //@ts-ignore
                 messages.current.show({ severity: 'error', detail: 'Please enter a chants between 1 to 100 repetitions' });
                 return;
@@ -74,16 +78,18 @@ export const Track = () => {
                 reset();
                 await viewUserHistory();
             } else {
-                messages.current.show({ severity: 'error', detail: 'This user ID does not exist, please go to register page to enter your repetitions.' });
+                messages.current.show({ severity: 'error', detail: 'Something has gone wrong' });
             }
         } else {
             //@ts-ignore
-            messages.current.show({ severity: 'error', detail: 'Please enter a chants between 1 to 100 repetitions' });
+            messages.current.show({ severity: 'error', detail: 'Please enter a chants between 1 to 100000 steps' });
             return;
         }
     };
 
     const dateValidation = () => {
+        const startDate = new Date(config.date.start * 1000);
+        const endDate = new Date(config.date.end * 1000);
         if (date < startDate) {
             //@ts-ignore
             messages.current.show({ severity: 'error', detail: 'Cannot enter dates before January. 21th..' });
@@ -116,6 +122,8 @@ export const Track = () => {
                         <Calendar
                             value={date}
                             onChange={(e) => setDate(e.value) }
+                            minDate={ config.date ? new Date(config.date.start * 1000) : today }
+                            maxDate={ config.date ? new Date(config.date.end * 1000) : today }
                             style={{ width: 'inherit' }}
                         ></Calendar>
                     </div>
