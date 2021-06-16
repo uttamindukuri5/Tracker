@@ -23,7 +23,7 @@ export const FormField = ({ type, value, setValue, name, label, data }) => {
                         <div className={ classes.inputField }>
                             <span className='p-float-label'>
                                 <InputText id={ name } {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setValue(e.target.value) } value={ value }/>
-                                <label htmlFor={ name } className={classNames({ 'p-error': isFormFieldValid(meta) })}>{ label }*</label>
+                                <label htmlFor={ name } className={classNames({ 'p-error': isFormFieldValid(meta) })} style={{ 'left': '1.0rem' }}>{ label }*</label>
                             </span>
                             {getFormErrorMessage(meta)}
                         </div>
@@ -58,7 +58,7 @@ export const FormField = ({ type, value, setValue, name, label, data }) => {
                         <div className={ classes.inputField }>
                             <span className="p-float-label">
                                 <InputNumber id={ name } {...input} autoFocus min={ data.min } max={ data.max } value={ value } onChange={ e => setValue(e.value) } />
-                                <label htmlFor={ name }>{ label }*</label>
+                                <label htmlFor={ name } style={{ 'left': '1.0rem' }}>{ label }*</label>
                             </span>
                         </div>
                     )} />

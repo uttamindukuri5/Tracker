@@ -11,22 +11,20 @@ export default function Paypal({ setPaid }) {
             intent: "CAPTURE",
             purchase_units: [
               {
-                description: "Walkathon Registration",
+                description: "Detroit Walkathon Registration",
                 amount: {
                   currency_code: "USD",
-                  value: 10.0,
+                  value: 15.0,
                 },
               },
             ],
           });
         },
         onApprove: async (data, actions) => {
-          const order = await actions.order.capture();
+          await actions.order.capture();
           setPaid(true);
-          console.log(order);
         },
         onError: (err) => {
-          console.log(err);
           setPaid(false);
         },
       })

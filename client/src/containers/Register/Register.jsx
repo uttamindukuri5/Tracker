@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { Form } from 'react-final-form';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import { Steps } from 'primereact/steps';
+import { Message } from 'primereact/message';
 
 import { register, getConfig } from '../../api/endpoint';
 import { validEmail, validPhone } from '../../config/validation';
@@ -25,16 +27,28 @@ export const Register = () => {
     const [ password, setPassword ] = useState('');
     const [ showMessage, setShowMessage ] = useState(false);
     const [ isRegistered, setIsRegistered ] = useState(false);
+    const [ step, setStep ] = useState('User Registration');
     const [ isPaid, setIsPaid ] = useState(false);
     const [ config, setConfig ] = useState({});
+    const [ errorMsg, setErrorMsg ] = useState([]);
 
     useEffect(() => {
         (async () => {
             const configResponse = await getConfig();
-            if (configResponse.status === 200)
+            if (configResponse.status === 200) {
                 setConfig(configResponse.data.data);
+                setTeam(configResponse.data.data.team[0]);
+            }
         })();
-    }, [])
+    }, []);
+
+    const tabs = [
+        {label: 'User Registration'},
+        {label: 'Payment'}
+    ];
+
+    const updateErrorMsg = msg => errorMsg.push(msg);
+
 
     const validate = () => {
         let errors = {};
@@ -103,6 +117,8 @@ export const Register = () => {
             setIsRegistered(false);
         }
         setShowMessage(true);
+        setErrorMsg([]);
+        setIsPaid(false);
     };
 
     const reset = () => {
@@ -115,81 +131,167 @@ export const Register = () => {
         setAge();
     };
 
+    const onValidation = () => {
+
+        if (username !== '' && firstName !== '' && lastName !== '' && validEmail(email) && validPhone(phone) && (age > 0 && age < 100))
+            return true;
+        else {
+            return false;
+        }
+    }
+
+    const displayErrorMsg = () => {
+        if (errorMsg.length !== 0)
+            setErrorMsg([]);
+        if (step === 'User Registration') {
+            if (username === '')
+                updateErrorMsg('Username is required')
+
+            if (firstName === '')
+                updateErrorMsg('First Name is required');
+
+            if (lastName === '')
+                updateErrorMsg('Last Name is required');
+
+            if (email === '')
+                updateErrorMsg('Email is required');
+            else if (!validEmail(email))
+                updateErrorMsg('Incorrect Email format');
+
+            if (phone === '')
+                updateErrorMsg('Phone is required');
+            else if (!validPhone(phone))
+                updateErrorMsg('Incorrect Phone format');
+
+            if (!age)
+                updateErrorMsg('Age is required');
+            else if (age < 0 || age > 100)
+                updateErrorMsg('Age can only be from 1 to 99');
+
+            if (password === '')
+                updateErrorMsg('Password is required');
+
+            if (team === '')
+                updateErrorMsg('Team is required');
+        } else {
+            if (!isPaid)
+                updateErrorMsg('Payment is required');
+        }
+
+        const error = [];
+        errorMsg.forEach(err => error.push(<li>{ err }</li>));
+
+        return (
+            <ul>{ error }</ul>
+        )
+
+    }
+
+
+    const getIndex = () => {
+        return tabs.findIndex((element, index) => {
+            if (element.label === step) {
+                return true;
+            }
+        })
+    }
+
+    const proccedToPayment = ()  => {
+        if (onValidation()) {
+            setStep('Payment');
+        } else {
+            setShowMessage(true);
+        }
+        setErrorMsg([]);
+    }
+
 
     return (
         <div className={classes.container}>
-            <Dialog visible={showMessage} onHide={() => history.push('/login')} position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
+            <div>
+                <Steps model={tabs} activeIndex={ getIndex() } />
+            </div>
+            <Dialog visible={showMessage} onHide={() => isRegistered ? history.push('/login') : setShowMessage(false) } position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
                 <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
                     { displayIcon() }
                     <h5>{ isRegistered ? 'Successfully Registered' : 'Registration Failed' }</h5>
                     <p style={{ lineHeight: 1.5, textIndent: '1rem' }}>
-                        { isRegistered ? 'You have been registered' : 'Please fill out all the required field' }
+                        { isRegistered ? 'You have been registered' : displayErrorMsg() }
                     </p>
                 </div>
             </Dialog>
             <Card  title='REGISTER'>
                 <Form onSubmit={onSubmit} validate={ validate } render={({ handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
-                        <FormField
-                            type='INPUT'
-                            name='firstName'
-                            label='First Name'
-                            value={ firstName }
-                            setValue={ setFirstName }
-                        />
-                        <FormField
-                            type='INPUT'
-                            name='lastName'
-                            label='Last Name'
-                            value={ lastName }
-                            setValue={ setLastName }
-                        />
-                        <FormField
-                            type='INPUT'
-                            name='username'
-                            label='Username'
-                            value={ username }
-                            setValue={ setUsername }
-                        />
-                        <FormField
-                            type='PASSWORD'
-                            name='password'
-                            label='Password'
-                            value={ password }
-                            setValue={ setPassword }
-                        />
-                        <FormField
-                            type='INPUT'
-                            name='email'
-                            label='Email'
-                            value={ email }
-                            setValue={ setEmail }
-                        />
-                        <FormField
-                            type='INPUT'
-                            name='phone'
-                            label='Phone'
-                            value={ phone }
-                            setValue={ setPhone }
-                        />
-                        <FormField
-                            type='NUMBER'
-                            name='age'
-                            label='Age'
-                            value={ age }
-                            setValue={ setAge }
-                            data={ ageRange() }
-                        />
-                        <FormField
-                            type='DROPDOWN'
-                            name='team'
-                            label='Team'
-                            value={ team }
-                            setValue={ setTeam }
-                            data={config.team}
-                        />
-                        <PayPal setPaid={ setIsPaid } />
-                        <Button type="submit" label="Submit" className="p-mt-2" />
+                        { step === 'User Registration' ?
+                        <div>
+                            <FormField
+                                type='INPUT'
+                                name='firstName'
+                                label='First Name'
+                                value={ firstName }
+                                setValue={ setFirstName }
+                            />
+                            <FormField
+                                type='INPUT'
+                                name='lastName'
+                                label='Last Name'
+                                value={ lastName }
+                                setValue={ setLastName }
+                            />
+                            <FormField
+                                type='INPUT'
+                                name='username'
+                                label='Username'
+                                value={ username }
+                                setValue={ setUsername }
+                            />
+                            <FormField
+                                type='PASSWORD'
+                                name='password'
+                                label='Password'
+                                value={ password }
+                                setValue={ setPassword }
+                            />
+                            <FormField
+                                type='INPUT'
+                                name='email'
+                                label='Email'
+                                value={ email }
+                                setValue={ setEmail }
+                            />
+                            <FormField
+                                type='INPUT'
+                                name='phone'
+                                label='Phone'
+                                value={ phone }
+                                setValue={ setPhone }
+                            />
+                            <FormField
+                                type='NUMBER'
+                                name='age'
+                                label='Age'
+                                value={ age }
+                                setValue={ setAge }
+                                data={ ageRange() }
+                            />
+                            <FormField
+                                type='DROPDOWN'
+                                name='team'
+                                label='Team'
+                                value={ team }
+                                setValue={ setTeam }
+                                data={config.team}
+                            />
+                            <Button type="button" label="Procced to Payment" onClick={ () => proccedToPayment() } className="p-mt-2" />
+                        </div>
+                        :
+                         <div id={ classes.payment }>
+                            <PayPal setPaid={ setIsPaid } />
+                            <Message severity="warn" text='When you click "PayPal" button you will be taken to PayPal page for completing the payment. You may sign in to your PayPal account(if you have one) or use the option "Credit/Debit Card Payment". When you complete the payment, PayPal will send you a payment confirmation email. Please save the email for your records. Before clicking Submit button, payment must been completed."' style={{ 'width': '300px' }}/>
+                            <Button type="submit" label="Submit" onSubmit={ () => onSubmit() } className="p-mt-2" />
+                        </div>
+                }
                     </form>
                 )} />
             </Card>

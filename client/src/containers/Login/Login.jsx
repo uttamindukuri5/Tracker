@@ -19,14 +19,14 @@ export const Login = ({ setAuth }) => {
     const [ password, setPassword ] = useState('');
     const [ showMessage, setShowMessage ] = useState(false);
 
-    const validate = (data) => {
+    const validate = () => {
         let errors = {};
 
-        if (!username) {
+        if (username === '') {
             errors.name = 'Name is required.';
         }
 
-        if (!password) {
+        if (password === '') {
             errors.password = 'Password is required.';
         }
 
@@ -79,7 +79,7 @@ export const Login = ({ setAuth }) => {
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
                                     <InputText id="username" {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setUsername(e.target.value) } value={ username }/>
-                                    <label htmlFor="username" className={classNames({ 'p-error': isFormFieldValid(meta) })}>Username*</label>
+                                    <label htmlFor="username" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '1.0rem' }}>Username *</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
                             </div>
@@ -88,7 +88,7 @@ export const Login = ({ setAuth }) => {
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
                                     <Password id='password' {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } toggleMask feedback={ false }/>
-                                    <label htmlFor="password" className={classNames({ 'p-error': isFormFieldValid(meta) })}>Password*</label>
+                                    <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })}>Password*</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
                             </div>
