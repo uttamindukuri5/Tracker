@@ -40,7 +40,7 @@ export const NavBar = ({ auth, setAuth }) => {
     return (
         <div>
             <Navbar color='dark' dark expand='md' fixed='top'>
-                <NavbarBrand href='/'><strong>VT SEVA Cancer Walkathon</strong></NavbarBrand>
+                <NavbarBrand href='/'><strong>VT SEVA Detroit Walkathon</strong></NavbarBrand>
                 <Nav className="mr-auto" navbar></Nav>
                 <Nav navbar>
                     <UncontrolledDropdown nav inNavbar>
