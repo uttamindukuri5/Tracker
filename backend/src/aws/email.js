@@ -12,8 +12,7 @@ const generateParams = user => {
             CcAddresses: [
             ],
             ToAddresses: [
-              'Detroit.youthdirector@vtsworld.org',
-              'Detroit.Director@vtsworld.org'
+              'uttamindukuri5@gmail.com'
               /* more items */
             ]
           },
