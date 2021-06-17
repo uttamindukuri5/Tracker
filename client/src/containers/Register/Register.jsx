@@ -76,7 +76,7 @@ export const Register = () => {
         return errors;
     };
 
-    const dialogFooter = <div><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false) } /></div>;
+    const dialogFooter = <div><Button label="OK" className="p-button-text" autoFocus onClick={() => isRegistered ? history.push('/login') : setShowMessage(false) } /></div>;
 
     const ageRange = () => {
         return {
@@ -110,14 +110,16 @@ export const Register = () => {
             if (response.status === 201) {
                 reset();
                 setIsRegistered(true);
+                setErrorMsg([]);
             } else {
                 setIsRegistered(false);
+                setErrorMsg([response.data.error])
             }
         } else {
             setIsRegistered(false);
+            setErrorMsg([]);
         }
         setShowMessage(true);
-        setErrorMsg([]);
         setIsPaid(false);
     };
 
@@ -141,9 +143,11 @@ export const Register = () => {
     }
 
     const displayErrorMsg = () => {
-        if (errorMsg.length !== 0)
-            setErrorMsg([]);
+
         if (step === 'User Registration') {
+            if (errorMsg.length !== 0)
+                setErrorMsg([]);
+
             if (username === '')
                 updateErrorMsg('Username is required')
 
@@ -174,8 +178,10 @@ export const Register = () => {
             if (team === '')
                 updateErrorMsg('Team is required');
         } else {
-            if (!isPaid)
+            console.log('PAID: ', isPaid);
+            if (!isPaid) {
                 updateErrorMsg('Payment is required');
+            }
         }
 
         const error = [];
