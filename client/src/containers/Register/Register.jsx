@@ -289,7 +289,7 @@ export const Register = () => {
                                 setValue={ setTeam }
                                 data={config.team}
                             />
-                            <Button type="button" label="Procced to Payment" onClick={ () => proccedToPayment() } className="p-mt-2" />
+                            <Button type="button" label="Proceed to Payment" onClick={ () => proccedToPayment() } className="p-mt-2" />
                         </div>
                         :
                          <div id={ classes.payment }>
