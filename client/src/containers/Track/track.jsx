@@ -62,9 +62,9 @@ export const Track = () => {
                 }
             };
 
-            if (track < 0 || track > 10000) {
+            if (track < 0 || track > 30000) {
                 //@ts-ignore
-                messages.current.show({ severity: 'error', detail: 'Please enter a chants between 1 to 100 repetitions' });
+                messages.current.show({ severity: 'error', detail: 'Please enter a steps between 1 to 30000 steps' });
                 return;
             }
 
@@ -82,7 +82,7 @@ export const Track = () => {
             }
         } else {
             //@ts-ignore
-            messages.current.show({ severity: 'error', detail: 'Please enter a chants between 1 to 100000 steps' });
+            messages.current.show({ severity: 'error', detail: 'Please enter a step between 1 to 30000 steps' });
             return;
         }
     };
@@ -92,7 +92,7 @@ export const Track = () => {
         const endDate = new Date(config.date.end * 1000);
         if (date < startDate) {
             //@ts-ignore
-            messages.current.show({ severity: 'error', detail: 'Cannot enter dates before January. 21th..' });
+            messages.current.show({ severity: 'error', detail: `Cannot enter dates before ${ startDate.getMonth } ${ startDate.getDate }, ${ startDate.getFullYear }.` });
             return false;
         } else if (date > today) {
             //@ts-ignore
@@ -111,6 +111,11 @@ export const Track = () => {
         setTrack();
     }
 
+    const getMaxDate = () => {
+        const endDate = new Date(config.date.end * 1000);
+        return endDate > today ? today : endDate;
+    }
+
     return (
         <div>
             <div id={ classes.form }>
@@ -123,7 +128,7 @@ export const Track = () => {
                             value={date}
                             onChange={(e) => setDate(e.value) }
                             minDate={ config.date ? new Date(config.date.start * 1000) : today }
-                            maxDate={ config.date ? new Date(config.date.end * 1000) : today }
+                            maxDate={ config.date ? getMaxDate() : today }
                             style={{ width: 'inherit' }}
                         ></Calendar>
                     </div>
@@ -144,7 +149,7 @@ export const Track = () => {
                     <Messages ref={ messages }/>
                 </div>
                 <div id={ classes.submitButton }>
-                    <Button label='Enter Repetitions' className='p-button-success' onClick={ submit }/>
+                    <Button label='Enter Steps' className='p-button-success' onClick={ submit }/>
                 </div>
             </div>
             <div className={classes.info}>
