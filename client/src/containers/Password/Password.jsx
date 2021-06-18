@@ -93,7 +93,7 @@ export const ResetPassword = () => {
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
                                     <Password id='password' {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } toggleMask feedback={ false }/>
-                                    <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '3.0rem' }}>Password*</label>
+                                    <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '3.0rem' }}>New Password*</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
                             </div>
