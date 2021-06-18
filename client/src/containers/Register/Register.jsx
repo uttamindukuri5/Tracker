@@ -6,7 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { Steps } from 'primereact/steps';
 import { Message } from 'primereact/message';
 
-import { register, getConfig, getUser } from '../../api/endpoint';
+import { register, getConfig, getUserID } from '../../api/endpoint';
 import { validEmail, validPhone } from '../../config/validation';
 import { Card } from '../../components/Card/card';
 import { FormField } from '../../components/Form/field';
@@ -208,17 +208,24 @@ export const Register = () => {
 
     const proccedToPayment = async ()  => {
         if (onValidation()) {
-            const response = await getUser(username);
-            if (response.status === 200)
-                setStep('Payment');
-            else {
+            const response = await getUserID(username);
+            if (response.status === 200) {
                 setUserExist(true);
                 setShowMessage(true);
+            } else {
+                setUserExist(false);
+                setShowMessage(false);
+                setStep('Payment');
             }
         } else {
             setShowMessage(true);
         }
         setErrorMsg([]);
+    }
+
+    const resetUser = () => {
+        setUserExist(false);
+        setShowMessage(false);
     }
 
 
@@ -227,7 +234,7 @@ export const Register = () => {
             <div>
                 <Steps model={tabs} activeIndex={ getIndex() } />
             </div>
-            <Dialog visible={showMessage} onHide={() => isRegistered ? history.push('/login') : setShowMessage(false) } position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
+            <Dialog visible={showMessage} onHide={() => isRegistered ? history.push('/login') : resetUser() } position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
                 <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
                     { displayIcon() }
                     <h5>{ isRegistered ? 'Successfully Registered' : 'Registration Failed' }</h5>
