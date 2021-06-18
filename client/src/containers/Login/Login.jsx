@@ -97,7 +97,7 @@ export const Login = ({ setAuth }) => {
                             </div>
                         )} />
                         <Button type="submit" label="Submit" className="p-mt-2" />
-
+                        <Button type='button' label='Register' className='p-mt-2 p-button-warning' onClick={ () => history.push('/register') } />
                     </form>
                 )} />
                 <a href='/resetPassword'>Forgot Password</a>
