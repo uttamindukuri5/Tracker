@@ -93,7 +93,6 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.put('/forgotPassword', async (req, res) => {
-    console.log('Hello');
     const { user } = req.body;
     console.log('USER: ', user);
     const existUser = await User.getUserID(user.userId);
