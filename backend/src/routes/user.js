@@ -82,6 +82,12 @@ router.get('/:id', async (req, res) => {
     !user ? res.status(404).send({ error: 'User does not exist' }) : res.status(200).send({ data: removeConfidentialInformation(user) });
 });
 
+router.get('/userId/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const user = await User.getUserID(userId);
+    user ? res.status(200).send({ data: 'User is available' }) : res.status(400).send({ error: 'User ID already taken, please try a different User ID' });
+});
+
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     const userExist = await User.getUser(id);
