@@ -6,7 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { Steps } from 'primereact/steps';
 import { Message } from 'primereact/message';
 
-import { register, getConfig } from '../../api/endpoint';
+import { register, getConfig, getUser } from '../../api/endpoint';
 import { validEmail, validPhone } from '../../config/validation';
 import { Card } from '../../components/Card/card';
 import { FormField } from '../../components/Form/field';
@@ -31,6 +31,7 @@ export const Register = () => {
     const [ isPaid, setIsPaid ] = useState(false);
     const [ config, setConfig ] = useState({});
     const [ errorMsg, setErrorMsg ] = useState([]);
+    const [ userExist, setUserExist ] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -177,6 +178,9 @@ export const Register = () => {
 
             if (team === '')
                 updateErrorMsg('Team is required');
+
+            if (userExist)
+                updateErrorMsg('User ID exist, please try a different User ID');
         } else {
             console.log('PAID: ', isPaid);
             if (!isPaid) {
@@ -202,9 +206,15 @@ export const Register = () => {
         })
     }
 
-    const proccedToPayment = ()  => {
+    const proccedToPayment = async ()  => {
         if (onValidation()) {
-            setStep('Payment');
+            const response = await getUser(username);
+            if (response.status === 200)
+                setStep('Payment');
+            else {
+                setUserExist(true);
+                setShowMessage(true);
+            }
         } else {
             setShowMessage(true);
         }
