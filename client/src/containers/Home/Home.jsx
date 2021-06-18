@@ -82,7 +82,7 @@ export const Home = () => {
                             />
                             <Stats
                                 title='Remaining Steps'
-                                stat={ 40000 - totalTrack }
+                                stat={ config.goal - totalTrack }
                             />
                             <Stats
                                 title='Remaining Days'
