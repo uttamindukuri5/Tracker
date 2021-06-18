@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Calendar } from 'primereact/calendar';
 import { InputNumber } from 'primereact/inputnumber';
@@ -10,8 +11,10 @@ import { Table } from '../../components/Table/table';
 import { registerTrack, getUserHistory, getConfig } from '../../api/endpoint';
 
 import classes from './track.module.css';
+import { getToken } from '../../config/token';
 
 export const Track = () => {
+    const history = useHistory();
     const
         today = new Date(),
         messages = useRef(null);
@@ -44,13 +47,17 @@ export const Track = () => {
     }
 
     useEffect(() => {
-        (async () => {
-            await viewUserHistory();
-            const configResponse = await getConfig();
-            if (configResponse.status === 200) {
-                setConfig(configResponse.data.data);
-            }
-        })();
+        if (getToken()) {
+            (async () => {
+                await viewUserHistory();
+                const configResponse = await getConfig();
+                if (configResponse.status === 200) {
+                    setConfig(configResponse.data.data);
+                }
+            })();
+        } else {
+            history.push('/login');
+        }
     }, [setData, setTotalTrack]);
 
     const submit = async () => {

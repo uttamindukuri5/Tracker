@@ -10,7 +10,6 @@ import { Stats } from '../../components/Stats/stats';
 import { Table } from '../../components/Table/table';
 
 import { getTeamStat, getAllUser, getConfig } from '../../api/endpoint';
-import { getToken } from '../../config/token';
 
 import classes from './home.module.css';
 
@@ -27,7 +26,6 @@ export const Home = () => {
 
     useEffect(() => {
         (async() => {
-            if (getToken()) {
                 const teamResponse = await getTeamStat();
                 const userResponse = await getAllUser();
                 const configResponse = await getConfig();
@@ -45,8 +43,6 @@ export const Home = () => {
                     setConfig(configResponse.data.data);
                     setDaysRemaining(getNumOfDays(configResponse.data.data.date))
                 }
-            } else
-                history.push('/login');
         })();
     }, [ setTotalTrack, setTeams, setDaysRemaining, history ]);
 
