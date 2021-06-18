@@ -6,7 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { Steps } from 'primereact/steps';
 import { Message } from 'primereact/message';
 
-import { register, getConfig } from '../../api/endpoint';
+import { register, getConfig, getUserID } from '../../api/endpoint';
 import { validEmail, validPhone } from '../../config/validation';
 import { Card } from '../../components/Card/card';
 import { FormField } from '../../components/Form/field';
@@ -31,6 +31,7 @@ export const Register = () => {
     const [ isPaid, setIsPaid ] = useState(false);
     const [ config, setConfig ] = useState({});
     const [ errorMsg, setErrorMsg ] = useState([]);
+    const [ userExist, setUserExist ] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -177,6 +178,9 @@ export const Register = () => {
 
             if (team === '')
                 updateErrorMsg('Team is required');
+
+            if (userExist)
+                updateErrorMsg('User ID exist, please try a different User ID');
         } else {
             console.log('PAID: ', isPaid);
             if (!isPaid) {
@@ -202,13 +206,26 @@ export const Register = () => {
         })
     }
 
-    const proccedToPayment = ()  => {
+    const proccedToPayment = async ()  => {
         if (onValidation()) {
-            setStep('Payment');
+            const response = await getUserID(username);
+            if (response.status === 200) {
+                setUserExist(true);
+                setShowMessage(true);
+            } else {
+                setUserExist(false);
+                setShowMessage(false);
+                setStep('Payment');
+            }
         } else {
             setShowMessage(true);
         }
         setErrorMsg([]);
+    }
+
+    const resetUser = () => {
+        setUserExist(false);
+        setShowMessage(false);
     }
 
 
@@ -217,7 +234,7 @@ export const Register = () => {
             <div>
                 <Steps model={tabs} activeIndex={ getIndex() } />
             </div>
-            <Dialog visible={showMessage} onHide={() => isRegistered ? history.push('/login') : setShowMessage(false) } position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
+            <Dialog visible={showMessage} onHide={() => isRegistered ? history.push('/login') : resetUser() } position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
                 <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
                     { displayIcon() }
                     <h5>{ isRegistered ? 'Successfully Registered' : 'Registration Failed' }</h5>
