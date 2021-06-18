@@ -20,6 +20,8 @@ const determineParam = (type, value) => {
             return generateGetUserIdParam(value);
         case UserAction.UPDATE_TRACK:
             return generateUpdateTrackParam(value);
+        case UserAction.UPDATE_PASSWORD:
+            return generateForgotPasswordParam(value);
         default:
             return;
     }
@@ -114,7 +116,6 @@ const generateUpdateParam = user => {
 };
 
 const generateUpdateTrackParam = ({ id, track }) => {
-    console.log(id, track);
     return {
         Key: {
             'id': id
@@ -128,6 +129,21 @@ const generateUpdateTrackParam = ({ id, track }) => {
         }
     };
 };
+
+const generateForgotPasswordParam = user => {
+    return {
+        Key: {
+            'id': user.id
+        },
+        ExpressionAttributeNames: {
+            '#password': 'password'
+        },
+        UpdateExpression: 'set #password = :password',
+        ExpressionAttributeValues: {
+            ':password': user.password
+        }
+    }
+}
 
 const generateSearchParam = search => {
     return {

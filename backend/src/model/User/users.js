@@ -29,6 +29,18 @@ const saveUser = async newUser => {
     }
 };
 
+
+const forgotPassword = async user => {
+    try {
+        const response = await db.update(generateParam(UserAction.UPDATE_PASSWORD, user)).promise();
+        console.log(response);
+        return response;
+    } catch (err) {
+        console.log('SAVE ERROR', err);
+        return false;
+    }
+}
+
 /**
  * Allows you to get all the users in the database
  */
@@ -56,6 +68,7 @@ const getUser = async id => {
 };
 
 const getUserID = async userId => {
+    console.log('USER ID: ', userId);
     try {
         const response = await db.scan(generateParam(UserAction.GET_USERID, userId)).promise();
         console.log('RESPONSE USERID', response);
@@ -78,7 +91,6 @@ const deleteUser = async id => {
 const updateUser = async updateUser => {
     try {
         const response = await db.update(generateParam(UserAction.UPDATE, updateUser)).promise();
-        console.log('RESPONSE', response);
         return response;
     } catch (err) {
         console.log(err);
@@ -112,3 +124,4 @@ exports.searchUser = searchUser;
 exports.updateUser = updateUser;
 exports.getUserID = getUserID;
 exports.updateTrack = updateTrack;
+exports.forgotPassword = forgotPassword;
