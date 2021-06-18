@@ -5,6 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import { Message } from 'primereact/message';
 import { classNames } from 'primereact/utils';
 
 import { resetPassword } from '../../api/endpoint';
@@ -83,7 +84,7 @@ export const ResetPassword = () => {
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
                                     <InputText id="username" {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setUsername(e.target.value) } value={ username }/>
-                                    <label htmlFor="username" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '1.0rem' }}>Username *</label>
+                                    <label htmlFor="username" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '3.0rem' }}>Username *</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
                             </div>
@@ -92,11 +93,14 @@ export const ResetPassword = () => {
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
                                     <Password id='password' {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } toggleMask feedback={ false }/>
-                                    <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })}>Password*</label>
+                                    <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '3.0rem' }}>Password*</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
                             </div>
                         )} />
+                        <div>
+                            <Message severity="warn" text='If you forget your username, please contact Detroit.Director@vtsworld.org and Detroit.youthdirector@vtsworld.org. Please give 24 hour time to respond.' style={{ 'width': '275px' }}/>
+                        </div>
                         <Button type="submit" label="Reset Password" className="p-mt-2" />
                     </form>
                 )} />
