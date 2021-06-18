@@ -11,6 +11,7 @@ import { NavBar } from './components/Navbar/navbar';
 import { Login } from './containers/Login/Login';
 import { Register } from './containers/Register/Register';
 import { Home } from './containers/Home/Home';
+import { ResetPassword } from './containers/Password/Password';
 
 function App() {
   const [ auth, setAuth ] = useState(false);
@@ -23,6 +24,7 @@ function App() {
         </div>
         <Switch>
           <Route path='/login' component={ () => <Login setAuth={ setAuth }/> } />
+          <Route path='/resetPassword' component={ ResetPassword } />
           <Route path='/register' component={ Register } />
           <Route path='/' component={ Home } />
         </Switch>

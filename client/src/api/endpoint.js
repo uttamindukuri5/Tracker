@@ -41,6 +41,7 @@ export const login = async data => {
 export const register = async data => await callBackend(POST, `/user/create`, data);
 export const getUser = async userId => await callBackend(GET, `/user/${ userId }`);
 export const getAllUser = async () => await callBackend(GET, `/user`);
+export const resetPassword = async data => await callBackend(PUT, `/user/forgotPassword`, data);
 
 export const registerTrack = async data => await callBackend(POST, `/track/create`, data);
 

@@ -7,17 +7,18 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { classNames } from 'primereact/utils';
 
-import { login } from '../../api/endpoint';
+import { resetPassword } from '../../api/endpoint';
 import { Card } from '../../components/Card/card';
 
-import classes from './login.module.css';
+import classes from './password.module.css';
 
-export const Login = ({ setAuth }) => {
+export const ResetPassword = () => {
     const history = useHistory();
 
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ showMessage, setShowMessage ] = useState(false);
+    const [ error, setError ] = useState('');
 
     const validate = () => {
         let errors = {};
@@ -45,11 +46,11 @@ export const Login = ({ setAuth }) => {
                 password
             }
         };
-        const response = await login(data);
+        const response = await resetPassword(data);
         if (response.status === 200) {
-            setAuth(true);
-            history.push('/');
+            history.push('/login');
         } else {
+            setError(response.data.error);
             setShowMessage(true);
         }
         reset();
@@ -68,11 +69,11 @@ export const Login = ({ setAuth }) => {
             <Dialog visible={showMessage} onHide={() => setShowMessage(false)} position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
                 <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
                     <i className='pi pi-times-circle' style={{ fontSize: '5rem', color: 'red' }}></i>
-                    <h5>Incorrect Authentication</h5>
-                    <p>Either User Name or Password is Incorrect</p>
+                    <h5>Incorrect</h5>
+                    <p>{ error }</p>
                 </div>
             </Dialog>
-            <Card  title='LOGIN'>
+            <Card  title='RESET PASSWORD'>
                 <div id={ classes.logo }>
                     <img src={`${process.env.PUBLIC_URL}/images/logo.png`} alt='logo'/>
                 </div>
@@ -96,11 +97,9 @@ export const Login = ({ setAuth }) => {
                                 {getFormErrorMessage(meta)}
                             </div>
                         )} />
-                        <Button type="submit" label="Submit" className="p-mt-2" />
-
+                        <Button type="submit" label="Reset Password" className="p-mt-2" />
                     </form>
                 )} />
-                <a href='/resetPassword'>Forgot Password</a>
             </Card>
         </div>
     )
