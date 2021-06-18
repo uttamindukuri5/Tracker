@@ -4,5 +4,6 @@ module.exports = {
     UPDATE: 'update',
     SEARCH: 'search',
     GET_USERID: 'getUserID',
-    UPDATE_TRACK: 'updateTrack'
+    UPDATE_TRACK: 'updateTrack',
+    UPDATE_PASSWORD: 'updatePassword'
 };

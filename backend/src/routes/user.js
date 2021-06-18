@@ -92,6 +92,29 @@ router.delete('/:id', async (req, res) => {
         res.status(404).send({ error: 'User does not exist' });
 });
 
+router.put('/forgotPassword', async (req, res) => {
+    const { user } = req.body;
+    console.log('USER: ', user);
+    const existUser = await User.getUserID(user.userId);
+    if (existUser) {
+        bcrypt.hash(user.password, 10, async (err, hash) => {
+            const updateUser = { ...user, id: existUser.id };
+            if (err)
+                return res.status(400).send({ error: err.message });
+            else {
+                // Update User Password
+                updateUser.password = hash;
+                await User.forgotPassword(updateUser);
+                res.status(200).send({ data: 'User saved successfully' });
+            }
+        });
+    } else {
+        console.log(existUser);
+        console.log('hello');
+        res.status(404).send({ error: 'User ID does not exist' });
+    }
+ });
+
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { user } = req.body;
@@ -99,9 +122,9 @@ router.put('/:id', async (req, res) => {
     if (userExist) {
         if (userExist.userId !== user.userId) {
             const userIdExist = await User.getUserID(user.userId);
-            if (userIdExist.length !== 0) {
+            if (userIdExist.length !== 0)
                 res.status(409).send({ error: 'User ID already exist' });
-            } else {
+            else {
                 const updateUser = { id: id, previousId: userExist.userId, ...user };
                 await User.updateUser(updateUser);
                 res.status(200).send({ data: 'User has been successfully updated' });
@@ -109,7 +132,8 @@ router.put('/:id', async (req, res) => {
         }
     } else
         res.status(404).send({ error: 'User does not exist' });
-})
+});
+
 
 router.post('/search', async (req, res) => {
     const { search } = req.body;
