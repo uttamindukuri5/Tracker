@@ -17,7 +17,7 @@ const validPhone = phone => {
 
 const validTeam = team => team != '' && team != null && team != undefined;
 
-const validTrack = count => count > 0 && count < 10000
+const validTrack = count => count > 0 && count < 30000
 
 exports.validUser = validUser;
 exports.validTrack = validTrack;
