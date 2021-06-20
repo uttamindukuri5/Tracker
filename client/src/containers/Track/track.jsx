@@ -114,7 +114,7 @@ export const Track = () => {
     }
 
     const reset = () => {
-        setDate();
+        setDate(today);
         setTrack();
     }
 
