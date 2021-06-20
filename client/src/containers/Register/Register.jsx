@@ -38,7 +38,6 @@ export const Register = () => {
             const configResponse = await getConfig();
             if (configResponse.status === 200) {
                 setConfig(configResponse.data.data);
-                setTeam(configResponse.data.data.team[0]);
             }
         })();
     }, []);
@@ -132,11 +131,12 @@ export const Register = () => {
         setEmail('');
         setPhone('');
         setAge();
+        setTeam('')
     };
 
     const onValidation = () => {
 
-        if (username !== '' && firstName !== '' && lastName !== '' && validEmail(email) && validPhone(phone) && (age > 0 && age < 100))
+        if (username !== '' && firstName !== '' && lastName !== '' && validEmail(email) && validPhone(phone) && (age > 0 && age < 100) && team !== '')
             return true;
         else {
             return false;
@@ -182,7 +182,6 @@ export const Register = () => {
             if (userExist)
                 updateErrorMsg('User ID exist, please try a different User ID');
         } else {
-            console.log('PAID: ', isPaid);
             if (!isPaid) {
                 updateErrorMsg('Payment is required');
             }
@@ -254,6 +253,7 @@ export const Register = () => {
                                 label='First Name'
                                 value={ firstName }
                                 setValue={ setFirstName }
+                                autoFocus={ true }
                             />
                             <FormField
                                 type='INPUT'
@@ -261,6 +261,7 @@ export const Register = () => {
                                 label='Last Name'
                                 value={ lastName }
                                 setValue={ setLastName }
+                                autoFocus={ false }
                             />
                             <FormField
                                 type='INPUT'
@@ -268,6 +269,7 @@ export const Register = () => {
                                 label='Username'
                                 value={ username }
                                 setValue={ setUsername }
+                                autoFocus={ false }
                             />
                             <FormField
                                 type='PASSWORD'
@@ -275,6 +277,7 @@ export const Register = () => {
                                 label='Password'
                                 value={ password }
                                 setValue={ setPassword }
+                                autoFocus={ false }
                             />
                             <FormField
                                 type='INPUT'
@@ -282,6 +285,7 @@ export const Register = () => {
                                 label='Email'
                                 value={ email }
                                 setValue={ setEmail }
+                                autoFocus={ false }
                             />
                             <FormField
                                 type='INPUT'
@@ -289,6 +293,7 @@ export const Register = () => {
                                 label='Phone'
                                 value={ phone }
                                 setValue={ setPhone }
+                                autoFocus={ false }
                             />
                             <FormField
                                 type='NUMBER'
@@ -297,6 +302,7 @@ export const Register = () => {
                                 value={ age }
                                 setValue={ setAge }
                                 data={ ageRange() }
+                                autoFocus={ false }
                             />
                             <FormField
                                 type='DROPDOWN'

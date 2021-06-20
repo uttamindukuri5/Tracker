@@ -90,7 +90,7 @@ export const Login = ({ setAuth }) => {
                         <Field name="password" render={({ input, meta }) => (
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
-                                    <Password id='password' {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } toggleMask feedback={ false }/>
+                                    <Password id='password' {...input} className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } toggleMask feedback={ false }/>
                                     <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })}>Password*</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
