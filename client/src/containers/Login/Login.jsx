@@ -96,8 +96,10 @@ export const Login = ({ setAuth }) => {
                                 {getFormErrorMessage(meta)}
                             </div>
                         )} />
-                        <Button type="submit" label="Submit" className="p-mt-2" />
-                        <Button type='button' label='Register' className='p-mt-2 p-button-warning' onClick={ () => history.push('/register') } />
+                        <div className={ classes.ButtonGroup }>
+                            <Button type="submit" label="Login" className="p-mt-2" id={ classes.LoginButton } />
+                            <Button type='button' label='New User Registration' className='p-mt-2 p-button-warning' onClick={ () => history.push('/register') } />
+                        </div>
                     </form>
                 )} />
                 <a href='/resetPassword'>Forgot Password</a>
