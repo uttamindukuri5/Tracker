@@ -22,3 +22,8 @@
     width: inherit;
     height: inherit;
 }
+
+.ButtonGroup {
+    display: flex;
+    flex-direction: column;
+}

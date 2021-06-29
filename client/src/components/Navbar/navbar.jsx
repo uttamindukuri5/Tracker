@@ -7,7 +7,8 @@ import {
     UncontrolledDropdown,
     DropdownToggle,
     DropdownMenu,
-    DropdownItem
+    DropdownItem,
+    NavItem
 } from 'reactstrap';
 
 import { removeToken, getToken } from '../../config/token';
@@ -51,6 +52,7 @@ export const NavBar = ({ auth, setAuth }) => {
                             <DropdownItem onClick={ () =>  signout() } style={{ display: !auth ? 'none' : '' }}>Sign-Out</DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
+                    <NavItem style={{ color: 'white' }} onClick={ () => history.push('/about') }>About</NavItem>
                 </Nav>
             </Navbar>
         </div>

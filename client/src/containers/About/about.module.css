@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    margin: auto;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-direction: column;
+    word-wrap: break-word;
+}
+
+#logo {
+    margin: auto;
+    width: 14em;
+    height: 10em;
+}
+
+#logo img {
+    width: inherit;
+    height: inherit;
+}
