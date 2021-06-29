@@ -26,12 +26,14 @@ export const Register = () => {
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ showMessage, setShowMessage ] = useState(false);
+    const [ showInfo, setShowInfo ] = useState(true);
     const [ isRegistered, setIsRegistered ] = useState(false);
     const [ step, setStep ] = useState('User Registration');
     const [ isPaid, setIsPaid ] = useState(false);
     const [ config, setConfig ] = useState({});
     const [ errorMsg, setErrorMsg ] = useState([]);
     const [ userExist, setUserExist ] = useState(false);
+    const [ displayAlertMessage, setDisplayAlertMessage ] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -77,6 +79,10 @@ export const Register = () => {
     };
 
     const dialogFooter = <div><Button label="OK" className="p-button-text" autoFocus onClick={() => isRegistered ? history.push('/login') : setShowMessage(false) } /></div>;
+
+    const infoFooter = <div><Button label="OK" className="p-button-text" autoFocus onClick={() => setShowInfo(false) } /></div>;
+
+    const alertFooter = <div><Button label="OK" className="p-button-text" autoFocus onClick={() => setDisplayAlertMessage(false) } /></div>;
 
     const ageRange = () => {
         return {
@@ -233,6 +239,22 @@ export const Register = () => {
             <div>
                 <Steps model={tabs} activeIndex={ getIndex() } />
             </div>
+            <Dialog visible={displayAlertMessage} onHide={() => setDisplayAlertMessage(false) } position="top" footer={alertFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
+                <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
+                    <h5>Submission Alert</h5>
+                    <p style={{ lineHeight: 1.5, textIndent: '1rem' }}>
+                    Please Click the Submit button to register
+                    </p>
+                </div>
+            </Dialog>
+            <Dialog visible={showInfo} onHide={() => setShowInfo(false) } position="top" footer={infoFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
+                <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
+                    <h5>Detroit Walkathon INFO</h5>
+                    <p style={{ lineHeight: 1.5, textIndent: '1rem' }}>
+                    VT Seva Detroit Youth Board's 1st Walkathon By participating in our 1st ever Walkathon, we can be healthy and support 2 causes. All the proceeds goes towards COVID-19 Relief Activities in India and Angels of Hope, MI. Our Bharath needs our support more than ever for the COVID-19 relief activities. When cancer becomes a part of one's life, there is a lot to worry about. Angels of Hope provides financial assistance to the Michigan families in need to ease the burden caused by the disease. Please register and support
+                    </p>
+                </div>
+            </Dialog>
             <Dialog visible={showMessage} onHide={() => isRegistered ? history.push('/login') : resetUser() } position="top" footer={dialogFooter} showHeader={false} breakpoints={{ '960px': '80vw' }} style={{ width: '30vw' }}>
                 <div className="p-d-flex p-ai-center p-dir-col p-pt-6 p-px-3">
                     { displayIcon() }
@@ -271,6 +293,7 @@ export const Register = () => {
                                 setValue={ setUsername }
                                 autoFocus={ false }
                             />
+                            <Message severity="warn" text={`Username is Case Senistive`} />
                             <FormField
                                 type='PASSWORD'
                                 name='password'
@@ -312,11 +335,12 @@ export const Register = () => {
                                 setValue={ setTeam }
                                 data={config.team}
                             />
+                            <br/>
                             <Button type="button" label="Proceed to Payment" onClick={ () => proccedToPayment() } className="p-mt-2" />
                         </div>
                         :
                          <div id={ classes.payment }>
-                            <PayPal setPaid={ setIsPaid } />
+                            <PayPal setPaid={ setIsPaid } setAlertMessage={ setDisplayAlertMessage }/>
                             <Message severity="warn" text='When you click "PayPal" button you will be taken to PayPal page for completing the payment. You may sign in to your PayPal account(if you have one) or use the option "Credit/Debit Card Payment". When you complete the payment, PayPal will send you a payment confirmation email. Please save the email for your records. Before clicking Submit button, payment must been completed."' style={{ 'width': '300px' }}/>
                             <Button type="submit" label="Submit" onSubmit={ () => onSubmit() } className="p-mt-2" />
                         </div>
