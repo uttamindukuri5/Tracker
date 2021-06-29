@@ -61,6 +61,8 @@ export const Home = () => {
         return totalTrack;
     }
 
+    const convertStepToMiles = steps => (steps / 2000).toFixed(2);
+
 
     const displayTab = () => {
         switch (currentTab) {
@@ -75,6 +77,10 @@ export const Home = () => {
                             <Stats
                                 title='Goal'
                                 stat={ config.goal }
+                            />
+                            <Stats
+                                title='Total Miles'
+                                stat={ convertStepToMiles(totalTrack) }
                             />
                             <Stats
                                 title='Total Participants'
