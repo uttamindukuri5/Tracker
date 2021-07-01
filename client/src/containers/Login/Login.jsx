@@ -82,7 +82,7 @@ export const Login = ({ setAuth }) => {
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
                                     <InputText id="username" {...input} autoFocus className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setUsername(e.target.value) } value={ username }/>
-                                    <label htmlFor="username" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '1.0rem' }}>Username *</label>
+                                    <label htmlFor="username" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '1.5rem' }}>Username *</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
                             </div>
@@ -91,7 +91,7 @@ export const Login = ({ setAuth }) => {
                             <div className={ classes.inputField }>
                                 <span className="p-float-label">
                                     <Password id='password' {...input} className={classNames({ 'p-invalid': isFormFieldValid(meta) })} onChange={ e => setPassword(e.target.value) } value={ password } toggleMask feedback={ false }/>
-                                    <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })}>Password*</label>
+                                    <label htmlFor="password" className={classNames({ 'p-error': getFormErrorMessage(meta) })} style={{ 'left': '1.1rem' }}>Password*</label>
                                 </span>
                                 {getFormErrorMessage(meta)}
                             </div>
