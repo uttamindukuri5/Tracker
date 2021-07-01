@@ -47,11 +47,12 @@ export const Home = () => {
     }, [ setTotalTrack, setTeams, setDaysRemaining, history ]);
 
     const getNumOfDays = date => {
+        const today = Date.now();
         const startDate = new Date(date.start * 1000);
         const endDate = new Date(date.end * 1000);
-
+        const beginDate = today > startDate ? ((today > endDate) ? endDate: today) : startDate;
         const day = 1000 * 60 * 60 * 24;
-        const diffTime = endDate - startDate;
+        const diffTime = endDate - beginDate;
         return Math.round(diffTime / day);
     }
 
